@@ -1,6 +1,20 @@
 ﻿@using HttpClientWeb.Dtos.Usuario
 @model UsuarioCriacaoDto
 
+@if (TempData["MensagemErro"] != null)
+{
+    <div class="alert alert-danger text-dark" role="alert">
+        @TempData["MensagemErro"]
+    </div>
+}
+
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success text-dark" role="alert">
+        @TempData["MensagemSucesso"]
+    </div>
+}
+
 <div class="text-danger" asp-validation-summary="All"></div>
 
 <h1>Cadastro de Usuários</h1>

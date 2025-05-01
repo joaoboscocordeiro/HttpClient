@@ -1,10 +1,10 @@
 using HttpClientWeb.Dtos.Login;
 using HttpClientWeb.Dtos.Usuario;
 using HttpClientWeb.Models;
+using HttpClientWeb.Services.Sessao;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace HttpClientWeb.Controllers
 {
@@ -13,11 +13,13 @@ namespace HttpClientWeb.Controllers
         Uri baseUrl = new Uri("https://localhost:7239/api");
 
         private readonly HttpClient _httpClient;
+        private readonly ISessaoInterface _sessaoInterface;
 
-        public HomeController(HttpClient httpClient)
+        public HomeController(HttpClient httpClient, ISessaoInterface sessaoInterface)
         {
             _httpClient = httpClient;
             _httpClient.BaseAddress = baseUrl;
+            _sessaoInterface = sessaoInterface;
         }
 
         [HttpGet]
@@ -57,9 +59,14 @@ namespace HttpClientWeb.Controllers
 
                 if (usuario.Status == false)
                 {
+                    TempData["MensagemErro"] = "Credenciais inválidas";
                     return View(usuarioLoginDto);
                 }
 
+                // Criar uma sessão com o usuário que se logou.
+                _sessaoInterface.CriarSessao(usuario.Dados);
+
+                TempData["MensagemSucesso"] = "Usuário logado!";
                 return RedirectToAction("ListarUsuarios");
             }
             else
@@ -87,10 +94,12 @@ namespace HttpClientWeb.Controllers
 
                 if (usuario.Status == false)
                 {
+                    TempData["MensagemErro"] = "Ocorreu um erro ao reslizar o processo!";
                     return View(usuarioCriacaoDto);
                 }
 
-                return RedirectToAction("ListarUsuarios");
+                TempData["MensagemSucesso"] = usuario.Mensagem;
+                return RedirectToAction("Login");
             }
             else
             {
