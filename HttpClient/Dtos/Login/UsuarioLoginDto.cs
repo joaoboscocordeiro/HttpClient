@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HttpClient.Dtos.Login
+namespace HttpClientWeb.Dtos.Login
 {
     public class UsuarioLoginDto
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HttpClient.Dtos.Usuario
+namespace HttpClientWeb.Dtos.Usuario
 {
     public class UsuarioCriacaoDto
     {

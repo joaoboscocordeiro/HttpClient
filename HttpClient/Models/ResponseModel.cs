@@ -1,4 +1,4 @@
-﻿namespace HttpClient.Models
+﻿namespace HttpClientWeb.Models
 {
     public class ResponseModel<T>
     {
