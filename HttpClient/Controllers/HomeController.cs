@@ -4,6 +4,7 @@ using HttpClientWeb.Models;
 using HttpClientWeb.Services.Sessao;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace HttpClientWeb.Controllers
@@ -35,9 +36,32 @@ namespace HttpClientWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult ListarUsuarios()
+        public async Task<IActionResult> ListarUsuarios()
         {
-            return View();
+            UsuarioModel usuario = _sessaoInterface.BuscarSessao();
+
+            if (usuario == null)
+            {
+                TempData["MensagemErro"] = "É necessário estar logado para acessar essa página!";
+                return RedirectToAction("Login");
+            }
+
+            ResponseModel<List<UsuarioModel>> usuarios = new ResponseModel<List<UsuarioModel>>();
+
+            using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, _httpClient.BaseAddress + "/Usuario"))
+            {
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", usuario.Token);
+
+                HttpResponseMessage response = await _httpClient.SendAsync(requestMessage);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = response.Content.ReadAsStringAsync().Result;
+                    usuarios = JsonConvert.DeserializeObject<ResponseModel<List<UsuarioModel>>>(data);
+                }
+
+                return View(usuarios.Dados);
+            }
         }
 
         [HttpPost]

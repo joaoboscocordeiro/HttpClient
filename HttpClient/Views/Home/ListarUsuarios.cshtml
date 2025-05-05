@@ -1,4 +1,6 @@
-﻿
+﻿@using HttpClientWeb.Models
+@model IEnumerable<UsuarioModel>
+
 @if (TempData["MensagemErro"] != null)
 {
     <div class="alert alert-danger text-dark" role="alert">
@@ -13,4 +15,11 @@
     </div>
 }
 
-<p>Listar Usuarios</p>
+<ul>
+
+    @foreach (var usuario in Model)
+    {
+        <li>@usuario.Email</li>
+    }
+
+</ul>
