@@ -103,6 +103,38 @@ namespace HttpClientWeb.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> EditarUsuario(UsuarioEdicaoDto usuarioEdicaoDto)
+        {
+            UsuarioModel usuario = _sessaoInterface.BuscarSessao();
+
+            if (usuario == null)
+            {
+                TempData["MensagemErro"] = "É necessário estar logado para acessar essa página!";
+                return RedirectToAction("Login");
+            }
+
+            ResponseModel<UsuarioModel> usuarioApi = new ResponseModel<UsuarioModel>();
+
+            using (var requestMessage = new HttpRequestMessage(HttpMethod.Put, _httpClient.BaseAddress + "/Usuario"))
+            {
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", usuario.Token);
+
+                requestMessage.Content = new StringContent(JsonConvert.SerializeObject(usuarioEdicaoDto), Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await _httpClient.SendAsync(requestMessage);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = response.Content.ReadAsStringAsync().Result;
+                    usuarioApi = JsonConvert.DeserializeObject<ResponseModel<UsuarioModel>>(data);
+                }
+
+                TempData["MensageSucesso"] = usuarioApi.Mensagem;
+                return RedirectToAction("ListaUsuarios");
+            }
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Login(UsuarioLoginDto usuarioLoginDto)
         {
             if (ModelState.IsValid)

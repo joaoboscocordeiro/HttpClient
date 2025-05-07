@@ -1,4 +1,48 @@
 ﻿@using HttpClientWeb.Dtos.Usuario
 @model UsuarioEdicaoDto
 
-<p>@Model.Sobrenome</p>
+@if (TempData["MensagemErro"] != null)
+{
+    <div class="alert alert-danger text-dark" role="alert">
+        @TempData["MensagemErro"]
+    </div>
+}
+
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success text-dark" role="alert">
+        @TempData["MensagemSucesso"]
+    </div>
+}
+
+<div class="text-danger" asp-validation-summary="All"></div>
+
+<h1>Editar Usuários</h1>
+
+<div class="container mt-5">
+    <form asp-action="EditarUsuario" asp-controller="Home" method="post">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label class="form-label">Usuário:</label>
+            <input type="text" class="form-control" asp-for="Usuario" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nome:</label>
+            <input type="text" class="form-control" asp-for="Nome" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Sobrenome:</label>
+            <input type="text" class="form-control" asp-for="Sobrenome" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">E-mail:</label>
+            <input type="email" class="form-control" asp-for="Email" />
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mb-2">Editar</button>
+        <a asp-action="ListarUsuarios" asp-controller="Home" class="btn btn-secondary w-100">Voltar</a>
+
+    </form>
+</div>
