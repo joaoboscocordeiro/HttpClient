@@ -160,7 +160,7 @@ namespace HttpClientWeb.Controllers
                 }
 
                 TempData["MensageSucesso"] = usuarioApi.Mensagem;
-                return RedirectToAction("ListaUsuarios");
+                return RedirectToAction("ListarUsuarios");
             }
         }
 
